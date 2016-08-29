@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>music</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0">
+	<link rel="stylesheet" href="iconfont/iconfont.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="container">
+		<div class="cd">
+			<div class="cdimg">
+				<div class="mainimg"></div>
+			</div>
+		</div>
+		<div class="controlBox">
+			<div class="bar-box">
+				<div class="bar">
+					<div class="beginTime">00:00</div>
+					<div class="process">
+						<div class="knot"></div>
+					</div>
+					<div class="endTime">00:00</div>
+				</div>	
+				
+			</div>
+			<audio src="music/1.mp3" class="myaudio" id="myaudio">
+				Your browser does not support the audio element.
+			</audio>
+		</div>
+
+		<div class="controlBtn"><a href="javascript:;" class="playBtn"><i class="iconfont icon-play2"></i></a></div>
+	</div>
+
+	<!-- <div class="list-box">
+		<ul class="list">
+			<li><a href="javascript:;" data-src="music/1.mp3">music1</a></li>
+			<li><a href="javascript:;" data-src="music/2.mp3">music2</a></li>
+			<li><a href="javascript:;" data-src="music/3.mp3">music3</a></li>
+			<li><a href="javascript:;" data-src="music/1.mp3">music4</a></li>
+		</ul>
+	</div> -->
+</body>
+</html>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+<script>
+	$(function(){
+		var cditem = $(".cdimg img,.mainimg");
+		var cd = $(".cd");
+		cditem.addClass('stop');
+		$(".playBtn").on('click', function(event) {
+			event.preventDefault();
+			var $t = $(this);
+			if (!$t.hasClass('play')) {
+				$t.addClass('play');
+				$('#myaudio')[0].play();
+				cd.addClass('active');
+				$t.find('i').removeClass('icon-play2').addClass('icon-stop1');
+				setInterval(function(){
+					check_video();
+				},1000);
+				cditem.removeClass('stop');
+			}else{
+				musicStop();
+			}
+		});
+	})
+
+	//音频时长
+	function check_video(){
+		//获取音频播放时长
+		video = document.getElementById("myaudio");
+		var t_time = video.duration;
+			dm = Math.floor(t_time / 60);
+			ds = Math.round(t_time - (dm * 60));
+		dm = time(dm);
+		ds = time(ds);	
+		dr = dm + ':' + ds;
+		//当前时间
+		var n_time = video.currentTime,
+			m = Math.floor((n_time) / 60),
+			s = Math.round((n_time) - (m * 60));
+		m = time(m);
+		s = time(s);	
+		r = m + ':' + s;
+
+		$(".beginTime").html(r);
+		$(".endTime").html(dr);
+		//更新状态条
+		var process = Math.floor(n_time) + 'px';
+		$(".process").css("width",process);
+		$(".knot").css("right","-15px");
+
+		var isend = video.ended;
+		if (isend) {
+			musicStop();
+		}
+	}
+
+	$(".knot").on('mousedown', function(event) {
+		event.preventDefault();	
+	});
+	
+	function time(t){
+		return t = (t < 10 ? '0' + t : t);
+	}
+
+	function musicStop(){
+		$(".playBtn").removeClass('play');
+		$('#myaudio')[0].pause();
+		$(".cd").removeClass('active');
+		$(".playBtn").find('i').removeClass('icon-stop1').addClass('icon-play2');
+		clearInterval(check_video);
+		$(".cdimg img,.mainimg").addClass('stop');
+	}
+</script>
