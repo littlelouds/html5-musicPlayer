@@ -1,2 +1,0 @@
-# owner
-About individual
